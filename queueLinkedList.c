@@ -107,7 +107,5 @@ int main() {
     } while (input != 0);
     printf("Exit\n");
 
-    visualize(myQueue);
-
     return 0;
 }
