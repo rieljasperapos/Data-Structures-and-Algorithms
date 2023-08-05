@@ -101,8 +101,7 @@ int main() {
     myBST = addNode(myBST, createStudent("Arima", 70, 22105020, 2, "BSCS"));
     display(myBST);
 
-    BST *searched;
-    searched = searchBST(myBST, 19);
+    BST *searched = searchBST(myBST, 19);
     if (searched != NULL) {
         printf("\nSearched Found\n");
     } else {
