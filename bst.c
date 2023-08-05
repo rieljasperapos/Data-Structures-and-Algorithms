@@ -63,7 +63,6 @@ BST *searchBST(BST *list, int age) {
     BST *current = list;
     while (current != NULL) {
         if (current->data.age == age) {
-            printf("\nSearched Found:\n");
             return current;
         }
 
@@ -103,7 +102,12 @@ int main() {
     display(myBST);
 
     BST *searched;
-    searched = searchBST(myBST, 70);
+    searched = searchBST(myBST, 19);
+    if (searched != NULL) {
+        printf("\nSearched Found\n");
+    } else {
+        printf("\nSearch not Found\n");
+    }
     printf("%s - %d - %d - %d - %s\n", searched->data.name, searched->data.age, searched->data.id, searched->data.year, searched->data.program);
 
     return 0;
