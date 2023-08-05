@@ -54,6 +54,28 @@ bstPtr addNode(BST *element, studentDetail s) {
     return element;
 }
 
+BST *searchBST(BST *list, int age) {
+    if (list == NULL) {
+        printf("Tree is empty\n");
+        return;
+    }
+
+    BST *current = list;
+    while (current != NULL) {
+        if (current->data.age == age) {
+            printf("\nSearched Found:\n");
+            return current;
+        }
+
+        // if the searched age is less than the root age go to the left subtree else go to the right subtree
+        if (age < current->data.age) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+    }
+}
+
 void display(BST *list) {
     if (list == NULL) {
         printf("NULL\n");
@@ -79,6 +101,10 @@ int main() {
     myBST = addNode(myBST, createStudent("Aqua", 14, 22105020, 2, "BSCS"));
     myBST = addNode(myBST, createStudent("Arima", 70, 22105020, 2, "BSCS"));
     display(myBST);
+
+    BST *searched;
+    searched = searchBST(myBST, 70);
+    printf("%s - %d - %d - %d - %s\n", searched->data.name, searched->data.age, searched->data.id, searched->data.year, searched->data.program);
 
     return 0;
 }
