@@ -38,7 +38,7 @@ treePtr insertNode() {
 
         printf("Inserting node %d\n", temp->elem);
 
-        // Insert at left using recursion
+        // Insert either left and right using recursion
         printf("Inserting %d's left subtree\n", temp->elem);
         temp->left = insertNode();
         printf("Inserting %d's right subtree\n", temp->elem);
