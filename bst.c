@@ -57,7 +57,7 @@ bstPtr addNode(BST *element, studentDetail s) {
 BST *searchBST(BST *list, int age) {
     if (list == NULL) {
         printf("Tree is empty\n");
-        return;
+        exit(1);
     }
 
     BST *current = list;
@@ -73,6 +73,32 @@ BST *searchBST(BST *list, int age) {
             current = current->right;
         }
     }
+}
+
+BST *deleteNode(BST *list, int data) { 
+    if (list->data.age == data) {
+        printf("\n==Deleting %s==\n", list->data.name);
+        BST *delete = list;
+        // DELETING A LEAF NODE WITH NO CHILDNODES
+        if (list->left == NULL) {
+            BST *temp = list->right;
+            free(delete);
+            return temp;
+        } else {
+            BST *temp = list->left;
+            free(delete);
+            return temp;
+        }
+    }
+
+    if (data < list->data.age) {
+        list->left = deleteNode(list->left, data);
+    } else {
+        list->right = deleteNode(list->right, data);
+    }
+
+    return list;
+
 }
 
 void display(BST *list) {
@@ -101,13 +127,24 @@ int main() {
     myBST = addNode(myBST, createStudent("Arima", 70, 22105020, 2, "BSCS"));
     display(myBST);
 
-    BST *searched = searchBST(myBST, 19);
+    BST *searched = searchBST(myBST, 14);
     if (searched != NULL) {
         printf("\nSearched Found\n");
     } else {
         printf("\nSearch not Found\n");
     }
     printf("%s - %d - %d - %d - %s\n", searched->data.name, searched->data.age, searched->data.id, searched->data.year, searched->data.program);
+
+    printf("\nDELETE\n");
+    myBST = deleteNode(myBST, 14);
+    display(myBST);
+    BST *searched1 = searchBST(myBST, 14);
+    if (searched1 != NULL) {
+        printf("\nSearched Found\n");
+    } else {
+        printf("\nSearch not Found\n");
+    }
+
 
     return 0;
 }
