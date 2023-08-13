@@ -79,7 +79,7 @@ BST *deleteNode(BST *list, int data) {
     if (list->data.age == data) {
         printf("\n==Deleting %s==\n", list->data.name);
         BST *delete = list;
-        // DELETING A LEAF NODE WITH NO CHILDNODES
+        // DELETING A LEAF NODE WITH NO CHILDNODES OR ONE CHILD
         if (list->left == NULL) {
             BST *temp = list->right;
             free(delete);
@@ -136,7 +136,7 @@ int main() {
     printf("%s - %d - %d - %d - %s\n", searched->data.name, searched->data.age, searched->data.id, searched->data.year, searched->data.program);
 
     printf("\nDELETE\n");
-    myBST = deleteNode(myBST, 14);
+    myBST = deleteNode(myBST, 69);
     display(myBST);
     BST *searched1 = searchBST(myBST, 14);
     if (searched1 != NULL) {
