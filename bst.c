@@ -76,7 +76,13 @@ BST *searchBST(BST *list, int age) {
 }
 
 BST *deleteNode(BST *list, int data) { 
-    if (list->data.age == data) {
+
+    if (data < list->data.age) {
+        list->left = deleteNode(list->left, data);
+    } else if (data > list->data.age) {
+        list->right = deleteNode(list->right, data);
+    } else {
+
         printf("\n==Deleting %s==\n", list->data.name);
         BST *delete = list;
         // DELETING A LEAF NODE WITH NO CHILDNODES OR ONE CHILD
@@ -84,18 +90,28 @@ BST *deleteNode(BST *list, int data) {
             BST *temp = list->right;
             free(delete);
             return temp;
-        } else {
+        } else if (list->right == NULL) {
             BST *temp = list->left;
             free(delete);
             return temp;
         }
+
+        // DELETE IF BOTH CHILD NODES ARE PRESENT
+        else {
+            BST *temp = list->right;
+            while (temp->left != NULL) {
+                temp = temp->left;
+            }
+            list->data = temp->data;
+            list->right = deleteNode(list->right, list->data.age);
+            printf("\nDATA: %d\n", data);
+            // printf("\n%d\n", temp->data.age);
+            // printf("%d\n", list->data.age);
+            // return list;
+        }
+
     }
 
-    if (data < list->data.age) {
-        list->left = deleteNode(list->left, data);
-    } else {
-        list->right = deleteNode(list->right, data);
-    }
 
     return list;
 
@@ -114,6 +130,50 @@ void display(BST *list) {
     printf("\n%s's RIGHT ELEMENT: \n", list->data.name);
     display(list->right);
     
+}
+
+void inorderBST(BST *list) {
+    if (list == NULL) {
+        return;
+    }
+
+    inorderBST(list->left);
+    printf("%s - %d - %d - %d - %s\n", list->data.name, list->data.age, list->data.id, list->data.year, list->data.program);
+    inorderBST(list->right);
+}
+
+void preorderBST(BST *list) {
+    if (list == NULL) {
+        return;
+    }
+
+    printf("%s - %d - %d - %d - %s\n", list->data.name, list->data.age, list->data.id, list->data.year, list->data.program);
+    preorderBST(list->left);
+    preorderBST(list->right);
+
+}
+
+void postorderBST(BST *list) {
+    if (list == NULL) {
+        return;
+    }
+
+    postorderBST(list->left);
+    postorderBST(list->right);
+    printf("%s - %d - %d - %d - %s\n", list->data.name, list->data.age, list->data.id, list->data.year, list->data.program);
+
+}
+
+int height(BST *list) {
+    if (list == NULL) {
+        return 0;
+    }
+
+    int lHeight = height(list->left);
+    int rHeight = height(list->right);
+
+    return ((lHeight > rHeight) ? lHeight : rHeight) + 1;
+
 }
 
 int main() {
@@ -136,7 +196,8 @@ int main() {
     printf("%s - %d - %d - %d - %s\n", searched->data.name, searched->data.age, searched->data.id, searched->data.year, searched->data.program);
 
     printf("\nDELETE\n");
-    myBST = deleteNode(myBST, 69);
+    myBST = deleteNode(myBST, 19);
+    //myBST = deleteNode(myBST, 69);
     display(myBST);
     BST *searched1 = searchBST(myBST, 14);
     if (searched1 != NULL) {
@@ -144,6 +205,15 @@ int main() {
     } else {
         printf("\nSearch not Found\n");
     }
+
+    printf("INORDER BST DISPLAY\n");
+    inorderBST(myBST);
+    printf("\nPREORDER BST DISPLAY\n");
+    preorderBST(myBST);
+    printf("\nPOSTORDER BST DISPLAY\n");
+    postorderBST(myBST);
+
+    printf("\nTHE HEIGHT OF THE TREE: %d\n", height(myBST));
 
 
     return 0;
