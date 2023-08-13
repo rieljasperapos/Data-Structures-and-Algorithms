@@ -111,10 +111,7 @@ BST *deleteNode(BST *list, int data) {
         }
 
     }
-
-
     return list;
-
 }
 
 void display(BST *list) {
@@ -199,7 +196,9 @@ int main() {
     myBST = deleteNode(myBST, 19);
     //myBST = deleteNode(myBST, 69);
     display(myBST);
-    BST *searched1 = searchBST(myBST, 14);
+
+    // TRY TO SEARCH THE DELETED NODE
+    BST *searched1 = searchBST(myBST, 19);
     if (searched1 != NULL) {
         printf("\nSearched Found\n");
     } else {
