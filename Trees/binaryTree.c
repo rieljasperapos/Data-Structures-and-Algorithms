@@ -55,8 +55,13 @@ int height(treePtr myTree) {
         return 0;
     }
 
+    printf("Calculating left height of %d\n", myTree->elem);
     lHeight = height(myTree->left);
+    printf("Calculating right height of %d\n", myTree->elem);
     rHeight = height(myTree->right);
+
+    printf("R Height: %d\n", rHeight);
+    printf("L Height: %d\n", lHeight);
 
     return ((lHeight > rHeight) ? lHeight : rHeight) + 1;
 }
