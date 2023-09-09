@@ -31,17 +31,9 @@ void visualize(node head) {
 
 void moveAtoB(node *A, node *B) {
     node trav;
-    trav = *B;
-    while(trav->next != NULL) {
-        // printf("%d\n", trav->data);
-        trav = trav->next;
-    }
-
-    // printf("%d\n", trav->data);
+    for (trav = *B; trav->next != NULL; trav = trav->next) {}
     trav->next = *A;
     *A = NULL;
-    
-    // printf("%s\n", trav);
 }
 
 int main() {
@@ -57,12 +49,14 @@ int main() {
     insert(&headB, 2);
     insert(&headB, 1);
 
+    //visualize(headA);
+    //visualize(headB);
+
     moveAtoB(&headA, &headB);
 
+    // visualize(headB);
     visualize(headA);
     visualize(headB);
-    // visualize(headA);
-    // visualize(headB);
 
 
 }
