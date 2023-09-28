@@ -51,8 +51,8 @@ void searchLength(DICTIONARY myDict) {
     int SL = 0;
     for (i = 0; i < MAX; i++) {
         if (myDict[i] != EMPTY)  {
-            SL = ((i - hash(myDict[i]) + 1) % 10 + 10) % 10;
-            printf("SEARCH LENGTH OF Index[%d] %d: %d\n", i, myDict[i], SL);
+            SL = ((i - hash(myDict[i]) + 1) + 10) % 10;
+            printf("SEARCH LENGTH OF INDEX[%d] %d: %d\n", i, myDict[i], SL);
         }
     }
 }
