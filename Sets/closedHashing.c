@@ -1,7 +1,8 @@
 #include <stdio.h>
 
 #define MAX 20
-#define EMPTY -1
+#define EMPTY 0
+#define DELETED -1
 
 typedef int LIST;
 
@@ -17,8 +18,10 @@ typedef struct {
 
 VirtualHeap initVirtualHeap();
 void insert(VirtualHeap *vh, LIST *list, int elem);
+void delete(VirtualHeap *vh, int elem);
 int hash(int elem);
 int allocSpace(VirtualHeap *vh);
+void deallocSpace(VirtualHeap *vh, int index);
 void displayPrimeDatas(VirtualHeap vh);
 void displaySynonymsData(VirtualHeap vh);
 
@@ -32,10 +35,13 @@ int main() {
     insert(&myVH, &myList, 13);
     insert(&myVH, &myList, 19);
     insert(&myVH, &myList, 14);
-    insert(&myVH, &myList, 13);
+    insert(&myVH, &myList, 33);
     insert(&myVH, &myList, 19);
     insert(&myVH, &myList, 10);
-    insert(&myVH, &myList, 13);
+    insert(&myVH, &myList, 23);
+
+    delete(&myVH, 13);
+    delete(&myVH, 33);
     displayPrimeDatas(myVH);
     printf("\n");
     displaySynonymsData(myVH);
@@ -67,6 +73,13 @@ VirtualHeap initVirtualHeap() {
     return vh;
 }
 
+void deallocSpace(VirtualHeap *vh, int index) {
+    if (index >= 0 && index < MAX) {
+        vh->data[index].link = vh->avail;
+        vh->avail = index;
+    }
+}
+
 int allocSpace(VirtualHeap *vh) {
     printf("MY AVAIL IN ALLOCSPACE IS: %d\n", vh->avail);
     int retVal = vh->avail;
@@ -95,6 +108,22 @@ void insert(VirtualHeap *vh, LIST *list, int elem) {
         // *list = avail;
         // printf("MY LIST IS: %d\n", *list);
     }
+}
+
+void delete(VirtualHeap *vh, int elem) {
+    int hashIndex = hash(elem);
+    if (vh->data[hashIndex].elem != DELETED) {
+        vh->data[hashIndex].elem = DELETED;
+    } else {
+        int *trav = &(vh->data[hashIndex].link);
+        for (; *trav != -1 && vh->data[*trav].elem != elem; trav = &(vh->data[*trav].link)) {}
+        if (*trav != -1) {
+            int temp = *trav;
+            *trav = vh->data[temp].link;
+            deallocSpace(vh, temp);
+        }
+    }
+
 }
 
 void displayPrimeDatas(VirtualHeap vh) {
