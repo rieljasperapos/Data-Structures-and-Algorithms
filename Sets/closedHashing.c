@@ -17,7 +17,7 @@ typedef struct {
 } VirtualHeap;
 
 VirtualHeap initVirtualHeap();
-void insert(VirtualHeap *vh, LIST *list, int elem);
+void insert(VirtualHeap *vh, LIST *myList, int elem);
 void delete(VirtualHeap *vh, int elem);
 int hash(int elem);
 int allocSpace(VirtualHeap *vh);
@@ -42,6 +42,10 @@ int main() {
 
     delete(&myVH, 13);
     delete(&myVH, 33);
+
+    insert(&myVH, &myList, 43);
+    insert(&myVH, &myList, 53);
+    insert(&myVH, &myList, 63);
     displayPrimeDatas(myVH);
     printf("\n");
     displaySynonymsData(myVH);
@@ -81,7 +85,7 @@ void deallocSpace(VirtualHeap *vh, int index) {
 }
 
 int allocSpace(VirtualHeap *vh) {
-    printf("MY AVAIL IN ALLOCSPACE IS: %d\n", vh->avail);
+    // printf("MY AVAIL IN ALLOCSPACE IS: %d\n", vh->avail);
     int retVal = vh->avail;
     if (retVal != -1) {
         vh->avail = vh->data[retVal].link;
@@ -90,23 +94,20 @@ int allocSpace(VirtualHeap *vh) {
 }
 
 
-void insert(VirtualHeap *vh, LIST *list, int elem) {
+void insert(VirtualHeap *vh, LIST *myList, int elem) {
     int index = hash(elem);
-    printf("MY INDEX IS: %d\n", index);
+    // printf("MY INDEX IS: %d\n", index);
 
-    if (vh->data[index].elem == EMPTY) {
+    if (vh->data[index].elem == EMPTY || vh->data[index].elem == DELETED) {
+        if (vh->data[index].elem == EMPTY) {
+            vh->data[index].link = *myList;
+        }  
         vh->data[index].elem = elem;
-        vh->data[index].link = -1;
     } else {
         int avail = allocSpace(vh);
         vh->data[avail].elem = elem;
         vh->data[avail].link = vh->data[index].link;
         vh->data[index].link = avail;
-        // printf("AVAIL IS: %d\n", vh->avail);
-        // vh->data[avail].elem = elem;
-        // vh->data[avail].link = *list;
-        // *list = avail;
-        // printf("MY LIST IS: %d\n", *list);
     }
 }
 
