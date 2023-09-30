@@ -16,6 +16,7 @@ void display(DICTIONARY A);
 void displayIndex(LIST A);
 void displayDictionary(DICTIONARY A);
 void insert(DICTIONARY A, int elem);
+void delete(DICTIONARY A, int elem);
 int hash(int elem);
 
 int main() {
@@ -30,6 +31,8 @@ int main() {
     insert(myDict, 14);
     insert(myDict, 24);
     insert(myDict, 8);
+
+    delete(myDict, 10);
     displayIndex(myDict[0]);
     displayDictionary(myDict);
 
@@ -53,7 +56,6 @@ void insert(DICTIONARY A, int elem) {
     newNode->link = NULL;
     int index = hash(elem);
     
-    printf("My index is: %d\n", index);
     if (A[index] == NULL) {
         A[index] = newNode;
     } else {
@@ -61,21 +63,26 @@ void insert(DICTIONARY A, int elem) {
         LIST trav = A[index];
         newNode->link = trav;
         A[index] = newNode;
-
-        // Dictionary *trav = A[index];
-        // while (*trav != NULL) {
-        //     trav = &(*trav)->link;
-        // }
-        // *trav = newNode;
     }
 }
 
+void delete(DICTIONARY A, int elem) {
+    int hashIndex = hash(elem);
+    if (A[hashIndex] == NULL) {
+        printf("EMPTY NO VALUES FOUND\n");
+    }
+    LIST *trav = &A[hashIndex];
+    for(; *trav != NULL && (*trav)->elem != elem; trav = &(*trav)->link) {}
+    LIST temp = *trav;
+    *trav = (*trav)->link;
+    free(temp);
+}
+
+
 // for checking each index of the dictionary if elements are properly inserted
 void displayIndex(LIST A) {
-    int i;
-    while (A != NULL) {
+    for (; A != NULL; A = A->link) {
         printf("%d\n", A->elem);
-        A = A->link;
     }
 }
 
@@ -94,10 +101,10 @@ void displayDictionary(DICTIONARY A) {
     for (indx = 0; indx < MAX; indx++) {
         LIST trav = A[indx];
         printf("index[%d]: ", indx);
-        while (trav != NULL) {
-            printf("%d ", trav->elem);
-            trav = trav->link;
+        for (; trav != NULL; trav = trav->link) {
+            printf("%d -> ", trav->elem);
         }
+        printf("NULL");
         printf("\n");
     }
 }
