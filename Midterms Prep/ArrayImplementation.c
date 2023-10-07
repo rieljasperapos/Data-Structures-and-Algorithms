@@ -7,7 +7,7 @@
 // Structure definition
 
 typedef struct grades {
-    float grades;
+    float grade;
     float average;
     int count;
 } *GPA;
@@ -26,10 +26,11 @@ typedef struct {
 // function prototypes
 
 void initializeList(LIST *L);
-void addStudent(LIST *L, Studrec student);
+void addStudent(LIST *L, Studrec *student);
 GPA initializeGrades();
-GPA addStudentGrade(LIST *L);
-void displayGrades(GPA grades);
+void addStudentGrade(Studrec *student);
+float getAverage(Studrec student);
+void displayGrades(Studrec student);
 void displayList(LIST L);
 Studrec createStud(char *name, char *course, GPA grades);
 
@@ -44,12 +45,13 @@ int main() {
     displayList(myList);
 
     Studrec stud1;
-    addStudent(&myList, stud1);
+    addStudent(&myList, &stud1);
 
     Studrec stud2;
-    addStudent(&myList, stud2);
+    addStudent(&myList, &stud2);
 
     displayList(myList);
+    displayGrades(stud2);
 
     return 0;
 }
@@ -83,58 +85,70 @@ GPA initializeGrades() {
     return studGrades;
 }
 
-GPA addStudentGrade(LIST *L) {
-    L->data[L->count].grades = initializeGrades();
+void addStudentGrade(Studrec *student) {
+    student->grades = initializeGrades();
     int choice;
     printf("Add a grade? 1: Yes 0: NO\n");
     scanf("%d", &choice);
     while(choice != 0) {
-        L->data[L->count].grades = realloc(L->data[L->count].grades, (L->data[L->count].grades->count + 1) * sizeof(struct grades));
+        student->grades = realloc(student->grades, (student->grades->count + 1) * sizeof(struct grades));
         printf("Input student grade: ");
-        scanf("%f", &L->data[L->count].grades[L->data[L->count].grades->count].grades);
+        scanf("%f", &student->grades[student->grades->count].grade);
 
-        L->data[L->count].grades->count++;
+        student->grades->count++;
 
         printf("Add more... ? press 1\n");
         scanf("%d", &choice);
     }
 
-    return L->data[L->count].grades;
 }
 
-void addStudent(LIST *L, Studrec student) {
+float getAverage(Studrec student) {
+    int i;
+    float average = 0;
+    float total = 0;
+    for (i = 0; i < student.grades->count; i++) {
+        total += student.grades[i].grade;
+    }
+    average = total / student.grades->count;
+
+    return average;
+
+}
+
+void addStudent(LIST *L, Studrec *student) {
     printf("Enter name: ");
     fflush(stdin);
-    gets(student.name);
+    gets(student->name);
 
     printf("Enter course: ");
     fflush(stdin);
-    gets(student.course);
+    gets(student->course);
 
-    student.grades = addStudentGrade(L);
-    L->data[L->count++] = student;
+    addStudentGrade(student);
+
+    L->data[L->count++] = *student;
 }
 
-void displayGrades(GPA myGrades) {
-    int i;
-    for (i = 0; i < myGrades->count ; i++) {
-        printf("Grade[%d]: %.2f\n", i, (myGrades + i)->grades);
+void displayGrades(Studrec student) {
+    int i,j;
+
+    printf("%s's Grades\n", student.name);
+    for (i= 0; i < student.grades->count; i++) {
+        printf("Grade[%d]: %.2f\n",i, student.grades[i].grade);
     }
+
+    float average = 0;
+    average = getAverage(student);
+    printf("GPA: %.2f\n", average);
 }
 
 void displayList(LIST L) {
     int i;
+    printf("STUDENT RECORD\n\n");
     printf("%s %30s %15s\n", "NO.", "NAME", "COURSE");
     for (i = 0; i < MAX; i++) {
-        printf("%3d %30s %15s\n\n",i, L.data[i].name, L.data[i].course);
-        if (L.data[i].grades->count == 0) {
-            printf("\nNo grades inputted\n");
-        } else {
-            int indx;
-            for (indx = 0; indx < L.data[i].grades->count; indx++) {
-                printf("Grades[%d]: %.2f\n", indx, L.data[i].grades[indx].grades);
-            }
-        }
+        printf("%3d %30s %15s\n",i, L.data[i].name, L.data[i].course);
         printf("-------------------------------------------------\n");
     }
 }
