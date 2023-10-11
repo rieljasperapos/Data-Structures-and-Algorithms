@@ -100,7 +100,6 @@ void addStudentGrade(Studrec *student) {
         printf("Add more... ? press 1\n");
         scanf("%d", &choice);
     }
-
 }
 
 float getAverage(Studrec student) {

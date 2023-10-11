@@ -27,9 +27,9 @@ void removeOccurences(LIST *list, char elem) {
     LIST *trav = list;
     while (*trav != NULL) {
         if ((*trav)->elem == elem) {
-            LIST delete = *trav;
+            LIST temp = *trav;
             *trav = (*trav)->next;
-            free(delete);
+            free(temp);
         } else {
             trav = &(*trav)->next;
         }
@@ -41,6 +41,31 @@ void removeOccurences(LIST *list, char elem) {
 
     // }
 }
+
+// void deleteFirstOccurence(LIST *L, char elem) {
+//     LIST *trav;
+//     LIST temp;
+//     for (trav = L; *trav != NULL && (*trav)->elem != elem; trav = &(*trav)->link){}
+//     if (*trav != NULL) {
+//         temp = *trav;
+//         *trav = temp->next;
+//         free(temp);
+//     }
+// }
+
+// void deleteAllOccur(LIST *L, char elem) {
+//     LIST *trav;
+//     LIST temp;
+//     for (trav = L; *trav != NULL){
+//         if ((*trav)->elem == elem) {
+//             temp = *trav;
+//             *trav = temp->next;
+//             free(temp);
+//         } else {
+//             trav = &(*trav)->next;
+//         }
+//     }
+// }
 
 int main() {
     LIST L;

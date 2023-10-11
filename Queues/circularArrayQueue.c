@@ -28,6 +28,12 @@ int main() {
     enqueue(&myQueue, 'U');
     enqueue(&myQueue, 'S');
     enqueue(&myQueue, 'C');
+    enqueue(&myQueue, 'C');
+    enqueue(&myQueue, 'C');
+    enqueue(&myQueue, 'C');
+    
+
+    
     traverse(&myQueue);
     
     return 0;
@@ -54,10 +60,10 @@ bool isFull(Queue Q) {
 void enqueue(Queue *Q, char data) {
     if (isFull(*Q)) {
         printf("ARRAY IS FULL\n");
+    } else {
+        Q->rear = (Q->rear + 1) % MAX;
+        Q->elem[Q->rear] = data;
     }
-
-    Q->rear = (Q->rear + 1) % MAX;
-    Q->elem[Q->rear] = data;
 }
 
 void dequeue(Queue *Q) {
@@ -70,7 +76,7 @@ void dequeue(Queue *Q) {
 void traverse(Queue *Q) {
     int temp = Q->front;
     Q->rear = Q->front;
-    printf("%c ", Q->elem[Q->front]);
+    printf("%c ", Q->elem[temp]);
     dequeue(Q);
     while (temp != Q->front && Q->elem[Q->front] != 'X') {
         Q->rear = Q->front;
