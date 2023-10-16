@@ -181,9 +181,13 @@ int main( )
     char delete01[] = "1703";
     char delete02[] = "1358";    
 	char delete03[] = "1601";
-	
 
-//Function Calls for Problem #4	    
+//Function Calls for Problem #4
+	deleteDict(&myDictionary, delete01);
+	deleteDict(&myDictionary, delete02);
+	deleteDict(&myDictionary, delete03);
+	displayOpenDict(myDictionary);
+	displayVHeap(myVH);
     
     
 
@@ -438,12 +442,26 @@ void displayOpenDict(openDic D)
  ************************************************************/
 void freeInVHeap(VHeap *VH, int ndx)
 {
-	
+	printf("MY Avail is: %d\n", VH->avail);
+	printf("MY index: %d\n", ndx);
+	VH->VH_node[ndx].next = VH->avail;
+	VH->avail = ndx;
 }
 
 void deleteDict(openDic *D, char *IDen)
 {
-
+	int i;
+	int *trav;
+	for (i = 0; i < OPEN_DSIZE; i++) {
+		for (trav = &(D->header[i]); *trav != -1 && strcmp(D->dicVHptr->VH_node[*trav].elem.prodID, IDen) != 0; trav = &(D->dicVHptr->VH_node[*trav].next)) {}
+		if (*trav != -1) {
+			int temp = *trav;
+			*trav = D->dicVHptr->VH_node[temp].next;
+			printf("Trav is equal to: %d\n", temp);
+			freeInVHeap(D->dicVHptr, temp);
+			D->count--;
+		}
+	}
 }
 
 
