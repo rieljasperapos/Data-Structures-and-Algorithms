@@ -201,8 +201,8 @@ int main( )
     //Declare variables needed for Problem #5
 	closeDic *myCloseDic;
 	myCloseDic = convertToCloseDict(&myDictionary);
-
 	displayCloseDict(*myCloseDic);
+	displayVHeap(myVH);
 
     
     
