@@ -199,6 +199,11 @@ int main( )
 	printf("\n\n\nProblem #5:: ");
     printf("\n------------");
     //Declare variables needed for Problem #5
+	closeDic *myCloseDic;
+	myCloseDic = convertToCloseDict(&myDictionary);
+
+	displayCloseDict(*myCloseDic);
+
     
     
     //Function Calls for Problem #5
@@ -442,10 +447,10 @@ void displayOpenDict(openDic D)
  ************************************************************/
 void freeInVHeap(VHeap *VH, int ndx)
 {
-	printf("MY Avail is: %d\n", VH->avail);
-	printf("MY index: %d\n", ndx);
-	VH->VH_node[ndx].next = VH->avail;
-	VH->avail = ndx;
+	if (ndx != -1) {
+		VH->VH_node[ndx].next = VH->avail;
+		VH->avail = ndx;
+	}
 }
 
 void deleteDict(openDic *D, char *IDen)
@@ -457,7 +462,6 @@ void deleteDict(openDic *D, char *IDen)
 		if (*trav != -1) {
 			int temp = *trav;
 			*trav = D->dicVHptr->VH_node[temp].next;
-			printf("Trav is equal to: %d\n", temp);
 			freeInVHeap(D->dicVHptr, temp);
 			D->count--;
 		}
@@ -468,22 +472,57 @@ void deleteDict(openDic *D, char *IDen)
 /************************************************************
  *  Problem 5:: Function Definitions                        *
  ************************************************************/
+
+// #define EMPTY   "empty"     // stored in product ID field  
+// #define DELETED  "del"      // stored in product ID field * 
+
+// typedef product closeDic[CLOSE_DSIZE]; 
+
 int closeHash(char *ID)
 {
+	int i;
+	int total = 0;
+	int toInteger = 0;
 
+	for (i = 0; ID[i] != '\0'; i++) {
+		toInteger = ID[i] - '0';
+		total += toInteger;
+	}
+
+	return total % CLOSE_DSIZE;
 }
 
 
 
 void initCloseDict(closeDic CD)
 {
-
+	int indx;
+	for (indx = 0; indx < CLOSE_DSIZE; indx++) {
+		strcpy(CD[indx].prodID, EMPTY);
+	}
 
 }
 
 closeDic * convertToCloseDict(openDic *D)
 {
-    
+    closeDic *temp = malloc(sizeof(closeDic));
+	if (temp != NULL) {
+		initCloseDict(*temp);
+	}
+	
+	int indx, trav, i;
+	for (indx = 0; indx < OPEN_DSIZE; indx++) {
+		for (trav = D->header[indx]; trav != -1; trav = D->dicVHptr->VH_node[trav].next) {
+			int hashIndex = closeHash(D->dicVHptr->VH_node[trav].elem.prodID);
+			printf("Hash Value of Closed Hash is: %d\n", hashIndex);
+			while (strcmp((*temp)[hashIndex].prodID, EMPTY) != 0) {
+				hashIndex = (hashIndex + 1) % CLOSE_DSIZE;
+			}
+			(*temp)[hashIndex] = D->dicVHptr->VH_node[trav].elem;
+		}
+	}
+
+	return temp;
 }	
 
 void displayCloseDict(closeDic CD)
@@ -498,6 +537,13 @@ void displayCloseDict(closeDic CD)
 	printf("\n%-6s%-10s%-15s", "-----", "-------", "----------"); 
 	
 	//Write your code here
+	printf("\n");
+	int indx;
+	for (indx = 0; indx < CLOSE_DSIZE; indx++) {
+		printf("%-6d", indx);
+		printf("%-10s", CD[indx].prodID);
+		printf("%-15s\n", CD[indx].prodDesc.name);
+	}
 
 	
 	printf("\n\n"); system("Pause");
