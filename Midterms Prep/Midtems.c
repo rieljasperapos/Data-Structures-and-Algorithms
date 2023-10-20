@@ -510,15 +510,23 @@ closeDic * convertToCloseDict(openDic *D)
 		initCloseDict(*temp);
 	}
 	
-	int indx, trav, i;
+	int indx, i;
+	int trav;
 	for (indx = 0; indx < OPEN_DSIZE; indx++) {
-		for (trav = D->header[indx]; trav != -1; trav = D->dicVHptr->VH_node[trav].next) {
+		trav = D->header[indx];
+		for (; trav != -1;) {
 			int hashIndex = closeHash(D->dicVHptr->VH_node[trav].elem.prodID);
 			printf("Hash Value of Closed Hash is: %d\n", hashIndex);
 			while (strcmp((*temp)[hashIndex].prodID, EMPTY) != 0) {
 				hashIndex = (hashIndex + 1) % CLOSE_DSIZE;
 			}
 			(*temp)[hashIndex] = D->dicVHptr->VH_node[trav].elem;
+			printf("ID is: %s\n", D->dicVHptr->VH_node[trav].elem.prodID);
+			// freeInVHeap(D->dicVHptr, trav);
+			int temp = trav;
+			trav = (D->dicVHptr->VH_node[temp].next);
+			printf("MY TRAV IS: %d\n", temp);
+			deleteDict(D, D->dicVHptr->VH_node[temp].elem.prodID);
 		}
 	}
 
