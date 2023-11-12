@@ -11,13 +11,18 @@ typedef struct {
 void initialize(Heap *H);
 void insert(Heap *H, int elem);
 void deletemin(Heap *H);
+void heapSort(Heap *H) ;
 void display(Heap H);
+void swap(Heap *H, int a, int b);
+int getSmallChild(Heap H, int parentIndx);
 
 int main() {
     Heap H;
 
     initialize(&H);
     display(H);
+    // int parentIndx = getParent(3);
+    // printf("Parent index is: %d\n", parentIndx);
 
     // 3, 4, 9 
     insert(&H, 3);
@@ -31,6 +36,11 @@ int main() {
     insert(&H, 18);
     insert(&H, 7);
     insert(&H, 2);
+    display(H);
+
+    heapSort(&H);
+    // deletemin(&H);
+    printf("\nHeap sort\n");
     display(H);
 
 }
@@ -56,20 +66,23 @@ void display(Heap H) {
     }
 }
 
+void swap(Heap *H, int a, int b) {
+    int temp = H->elem[a];
+    H->elem[a] = H->elem[b];
+    H->elem[b] = temp;
+}
+
 void insert(Heap *H, int elem) {
     if (H->lastIndx < MAX) {
         H->elem[++H->lastIndx] = elem;
         int childIndx = H->lastIndx;
+        int parentIndx = (childIndx - 1) / 2;
 
         int child = H->elem[childIndx];
-        int parentIndx = (childIndx - 1) / 2;
         int parent = H->elem[parentIndx];
 
         while (child < parent) {
-            int temp = parent;
-            printf("PARENT INDEX: %d\n", parentIndx);
-            H->elem[parentIndx] = child;
-            H->elem[childIndx] = temp;
+            swap(H, parentIndx, childIndx);
 
             childIndx = parentIndx;
             child = H->elem[childIndx];
@@ -80,4 +93,45 @@ void insert(Heap *H, int elem) {
         printf("Heap is full\n");
     }
 }
+
+int getSmallChild(Heap H, int parentIndx) {
+    int LChild = (parentIndx * 2) + 1;
+    int RChild = (parentIndx * 2) + 2;
+
+    return (H.elem[LChild] < H.elem[RChild] ? LChild : RChild);
+
+}
+
+void heapSort(Heap *H) {
+    int oldLast = H->lastIndx;
+    while (H->lastIndx != -1) {
+        deletemin(H);
+    }
+    H->lastIndx = oldLast;
+}
+
+void deletemin(Heap *H) {
+    int root = 0;
+    int last = H->lastIndx;
+    swap(H, root, last);
+    H->lastIndx--;
+
+    int parentIndx = root;
+    int childIndx = getSmallChild(*H, parentIndx);
+
+    int parent = H->elem[parentIndx];
+    int child = H->elem[childIndx];
+
+    while (child < parent && childIndx < H->lastIndx) {
+        swap(H, parentIndx, childIndx);
+        parentIndx = childIndx;
+        childIndx = getSmallChild(*H, parentIndx);
+
+        parent = H->elem[parentIndx];
+        child = H->elem[childIndx];
+    }
+}
+
+
+
 
