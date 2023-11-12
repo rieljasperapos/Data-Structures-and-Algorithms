@@ -39,7 +39,6 @@ int main() {
     display(H);
 
     heapSort(&H);
-    // deletemin(&H);
     printf("\nHeap sort\n");
     display(H);
 
