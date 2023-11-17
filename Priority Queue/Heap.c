@@ -12,31 +12,45 @@ void initialize(Heap *H);
 void insert(Heap *H, int elem);
 void deletemin(Heap *H);
 void heapSort(Heap *H) ;
+void heapify(Heap *H, int *arr, int size, int lowParentIndx);
 void display(Heap H);
 void swap(Heap *H, int a, int b);
 int getSmallChild(Heap H, int parentIndx);
 
+
 int main() {
     Heap H;
-
+    int arrayOfNumbers[] = {3, 4, 9, 6, 5, 9, 10, 10, 18, 7, 2};
+    int size = sizeof(arrayOfNumbers) / sizeof(int);
+    int lowLevelParent = ((size - 1) - 1) / 2 ;
     initialize(&H);
+
+    for (int i = 0; i < size; i++) {
+        H.elem[i] = arrayOfNumbers[i];
+        H.lastIndx = size - 1;
+    }
+
     display(H);
+    heapify(&H, arrayOfNumbers, size, lowLevelParent);
+    printf("\nHEAPIFY\n");
+    display(H);
+
     // int parentIndx = getParent(3);
     // printf("Parent index is: %d\n", parentIndx);
 
     // 3, 4, 9 
-    insert(&H, 3);
-    insert(&H, 4);
-    insert(&H, 9);
-    insert(&H, 6);
-    insert(&H, 5);
-    insert(&H, 9);
-    insert(&H, 10);
-    insert(&H, 10);
-    insert(&H, 18);
-    insert(&H, 7);
-    insert(&H, 2);
-    display(H);
+    // insert(&H, 3);
+    // insert(&H, 4);
+    // insert(&H, 9);
+    // insert(&H, 6);
+    // insert(&H, 5);
+    // insert(&H, 9);
+    // insert(&H, 10);
+    // insert(&H, 10);
+    // insert(&H, 18);
+    // insert(&H, 7);
+    // insert(&H, 2);
+    // display(H);
 
     heapSort(&H);
     printf("\nHeap sort\n");
@@ -109,6 +123,7 @@ void heapSort(Heap *H) {
     H->lastIndx = oldLast;
 }
 
+// DELETEMIN
 void deletemin(Heap *H) {
     int root = 0;
     int last = H->lastIndx;
@@ -129,6 +144,21 @@ void deletemin(Heap *H) {
         parent = H->elem[parentIndx];
         child = H->elem[childIndx];
     }
+}
+
+// Heapify
+void heapify(Heap *H, int *arr, int size, int lowParentIndx) {
+    int i;
+    for (i = lowParentIndx; i >= 0; i--) {
+        int childIndx = getSmallChild(*H, i);
+        int parentIndx = i;
+        while (H->elem[childIndx] < H->elem[parentIndx] && childIndx < size) {
+            swap(H, i, childIndx);
+            parentIndx = childIndx;
+            childIndx = getSmallChild(*H, parentIndx);
+        }
+    }
+
 }
 
 
