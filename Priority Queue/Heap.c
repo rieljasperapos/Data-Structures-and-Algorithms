@@ -12,7 +12,7 @@ void initialize(Heap *H);
 void insert(Heap *H, int elem);
 void deletemin(Heap *H);
 void heapSort(Heap *H) ;
-void heapify(Heap *H, int *arr, int size, int lowParentIndx);
+void heapify(Heap *H, int lowParentIndx);
 void display(Heap H);
 void swap(Heap *H, int a, int b);
 int getSmallChild(Heap H, int parentIndx);
@@ -31,7 +31,7 @@ int main() {
     }
 
     display(H);
-    heapify(&H, arrayOfNumbers, size, lowLevelParent);
+    heapify(&H, lowLevelParent);
     printf("\nHEAPIFY\n");
     display(H);
 
@@ -136,7 +136,7 @@ void deletemin(Heap *H) {
     int parent = H->elem[parentIndx];
     int child = H->elem[childIndx];
 
-    while (child < parent && childIndx < H->lastIndx) {
+    while (child < parent && childIndx <= H->lastIndx) {
         swap(H, parentIndx, childIndx);
         parentIndx = childIndx;
         childIndx = getSmallChild(*H, parentIndx);
@@ -147,12 +147,12 @@ void deletemin(Heap *H) {
 }
 
 // Heapify
-void heapify(Heap *H, int *arr, int size, int lowParentIndx) {
+void heapify(Heap *H, int lowParentIndx) {
     int i;
     for (i = lowParentIndx; i >= 0; i--) {
         int childIndx = getSmallChild(*H, i);
         int parentIndx = i;
-        while (H->elem[childIndx] < H->elem[parentIndx] && childIndx < size) {
+        while (H->elem[childIndx] < H->elem[parentIndx] && childIndx <= H->lastIndx) {
             swap(H, i, childIndx);
             parentIndx = childIndx;
             childIndx = getSmallChild(*H, parentIndx);
