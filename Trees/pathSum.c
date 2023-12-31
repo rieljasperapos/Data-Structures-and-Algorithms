@@ -67,6 +67,7 @@ int main() {
     bool result = hasPathSum(root, targetSum);
 
     printf("Does the tree have a path with sum %d? %s\n", targetSum, result ? "true" : "false");
+    printf("TEST COMMIT");
 
     free(root->left);
     free(root->right);
