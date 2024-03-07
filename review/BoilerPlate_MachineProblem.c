@@ -174,9 +174,14 @@ void displayCloseDict(closeDic CD);
  	printf("\n\n\nProblem #4:: "); 
  	printf("\n------------");	
  //Declare variables needed for Problem #4
-    char delete01[] = "1703";
-    char delete02[] = "1358";    
+  char delete01[] = "1703";
+  char delete02[] = "1358";    
 	char delete03[] = "1601";
+  deleteDict(&myDic, delete01);
+  deleteDict(&myDic, delete02);
+  deleteDict(&myDic, delete03);
+  displayOpenDict(myDic);
+  displayVHeap(VH);
 	
  
 //Function Calls for Problem #4	    
@@ -191,9 +196,13 @@ void displayCloseDict(closeDic CD);
 	printf("\n\n\nProblem #5:: ");
     printf("\n------------");
     //Declare variables needed for Problem #5
+    closeDic *myCloseD = convertToCloseDict(&myDic);
     
     
     //Function Calls for Problem #5
+    displayCloseDict(*myCloseD);
+    displayVHeap(VH);
+
 	 
 	
 
@@ -232,7 +241,7 @@ void displayVHeap(VHeap V)
     printf("\n\nDetails of the Virtual Heap :: ");
     printf("\n------------------------------");
     printf("\nAvailable Index  ::  %d", V.avail);       //Complete this statement
-	  printf("\nVHeap Address    ::  %x" , &V.VH_node);       //Complete this statemet
+	  printf("\nVHeap Address    ::  %p" , &V.VH_node);       //Complete this statemet
 	
     printf("\n\n%10s", "Index");
     printf("%10s", "Prod ID");
@@ -432,12 +441,24 @@ void displayOpenDict(openDic D)
  ************************************************************/
 void freeInVHeap(VHeap *VH, int ndx)
 {
-	 
+  strcpy(VH->VH_node[ndx].elem.prodID, "    ");
+  VH->VH_node[ndx].next = VH->avail;
+  VH->avail = ndx;
 }
 
 void deleteDict(openDic *D, char *IDen)
 {
- 
+ int hashIndx = openHash(IDen);
+ int *trav;
+ for (trav = &D->header[hashIndx]; *trav != -1 && strcmp(D->dicVHptr->VH_node[*trav].elem.prodID, IDen) != 0; trav = &D->dicVHptr->VH_node[*trav].next) {}
+ if (*trav != -1) {
+  int temp = *trav;
+  *trav = D->dicVHptr->VH_node[temp].next;
+  freeInVHeap(D->dicVHptr, temp);
+  printf("\nProduct with ID: %s is successfully deleted.", IDen);
+ } else {
+  printf("\nProduct with ID: %s is not in the dictionary", IDen);
+ }
 }
 
 
@@ -446,20 +467,57 @@ void deleteDict(openDic *D, char *IDen)
  ************************************************************/
 int closeHash(char *ID)
 {
-     
+  int sum = 0, indx;
+  for (indx = 0; ID[indx] != '\0'; indx++) {
+    sum += ID[indx] - '0';
+  }
+  return sum % CLOSE_DSIZE;  
 }
 
 
 
 void initCloseDict(closeDic CD)
 {
-	 
+	 int indx;
+   for (indx = 0; indx < CLOSE_DSIZE; indx++) {
+    strcpy(CD[indx].prodID, "EMPTY");
+   }
 
 }
  
 closeDic * convertToCloseDict(openDic *D)
 {
-    
+  int indx;
+  closeDic *closeD = (closeDic*)malloc(sizeof(closeDic));
+  if (*closeD != NULL) {
+    initCloseDict(*closeD);
+    List temp;
+    temp.last = -1;
+    for (indx = 0; indx < OPEN_DSIZE; indx++) {
+        int *trav;
+        for (trav = &D->header[indx]; *trav != -1;) {
+            int hashIndx = closeHash(D->dicVHptr->VH_node[*trav].elem.prodID);
+            if (strcmp((*closeD)[hashIndx].prodID, "EMPTY") == 0) {
+                (*closeD)[hashIndx] = D->dicVHptr->VH_node[*trav].elem;
+            } else {
+                temp.prod[++temp.last] = D->dicVHptr->VH_node[*trav].elem;
+            }
+            int temp = *trav;
+            *trav = D->dicVHptr->VH_node[temp].next;
+            freeInVHeap(D->dicVHptr, temp);
+        }
+    }
+
+    for (indx = 0; indx <= temp.last; indx++) {
+        int hashIndx = closeHash(temp.prod[indx].prodID);
+        int i;
+        for (i = 0; strcmp((*closeD)[hashIndx].prodID, "EMPTY") != 0 && i < CLOSE_DSIZE; i++, hashIndx = ((closeHash(temp.prod[indx].prodID)) + i) % CLOSE_DSIZE) {}
+        if (i != CLOSE_DSIZE) {
+            (*closeD)[hashIndx] = temp.prod[indx];
+        } 
+    }
+  }
+  return closeD;
 }	
 
 void displayCloseDict(closeDic CD)
@@ -475,6 +533,12 @@ void displayCloseDict(closeDic CD)
 	printf("\n%-6s%-10s%-15s", "-----", "-------", "----------"); 
 	
 	//Write your code here
+  int indx;
+  for (indx = 0; indx < CLOSE_DSIZE; indx++) {
+    printf("\n%-6d", indx);
+    printf("%-10s", CD[indx].prodID);
+    printf("%-15s", CD[indx].prodDesc.name);
+  }
 	 
 	
 	printf("\n\n"); system("Pause");
