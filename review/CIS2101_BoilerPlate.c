@@ -150,6 +150,9 @@ int main(void)
 	 *-------------------------------------------------------------------------*/	  
     printf("\n\n\nProblem #3:: ");
     printf("\n------------\n");
+    studSet *inactiveStuds = removeInactiveStudents(myDict);
+    displayDCISMDict(myDict);
+    displayStudSets(inactiveStuds);
 
     
     return 0;
@@ -444,6 +447,13 @@ void displayDCISMDict(dcismDict D)
 studSet* initStudSet(void)
 {
      //Write your code here
+     studSet *temp;
+     *temp = (studSet)malloc(sizeof(sNode));
+     if (*temp != NULL) {
+      (*temp)->count = 0;
+     }
+     
+     return temp;
 }
 
 
@@ -453,6 +463,10 @@ studSet* initStudSet(void)
 void insertStudSet(studSet S, studRec sRecord)
 {
     //Write your code here
+    if (S->count != MAXSTUDS) {
+      S->studs[S->count++] = sRecord;
+    }
+
 }
 
 
@@ -464,6 +478,26 @@ void insertStudSet(studSet S, studRec sRecord)
 studSet* removeInactiveStudents(dcismDict D)
 {
      //Write your code here
+     studSet *temp = initStudSet();
+     int i, j;
+     for (i = 0; i < NUMPROGRAMS; i++) {
+      for (j = 0; j < YEARLEVELS; j++) {
+        studLL *trav;
+        for (trav = &(D[i].programStuds[j]); *trav != NULL; ) {
+          if ((*trav)->stud.info & 128 < 1) {
+            studRec stud;
+            studLL inactive = *trav;
+            *trav = inactive->next;
+            // DO: Inserting
+            strcpy(stud.studID, inactive->stud.idNum);
+            stud.sName = inactive->stud.name;
+            insertStudSet(*temp, stud);
+          } else {
+            trav = &(*trav)->next;
+          }
+        }
+      }
+     }
 }
 
  
@@ -474,6 +508,16 @@ studSet* removeInactiveStudents(dcismDict D)
 void displayStudSets(studSet* S)
 {
      //Write your code 
+     int indx;
+     printf("%-10s\n", "ID");
+     printf("%-10s\n", "Firstname");
+     printf("%-10s\n", "Lastname");
+
+     for (indx = 0; indx < (*S)->count; indx++) {
+      printf("\n%-10s", (*S)->studs[indx].studID);
+      printf("%-10s", (*S)->studs[indx].sName.fName);
+      printf("%-10s", (*S)->studs[indx].sName.lName);
+     }
 }
 
 
