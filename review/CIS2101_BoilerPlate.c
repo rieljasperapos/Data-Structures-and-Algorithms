@@ -157,7 +157,7 @@ int main(void)
     
     return 0;
 }                                  
-                                       
+
 
 /*****************************************************************************************
  *  Functions for Problem # 1                                                            *
@@ -209,39 +209,39 @@ char* getProgram(personalInfo I)
   // 10 - IS
   // 11 - MATH
   char *program;
-  if ((I & 1 << 1) == 0 && (I & 1 << 0) == 0) {
-    program = (char *)malloc(sizeof("BSCS"));
-    strcpy(program, "BSCS");
-  } else if ((I & 1 << 1) == 0 && (I & 1 << 0) == 1) {
-    program = (char *)malloc(sizeof("BSIT"));
-    strcpy(program, "BSIT");
-  } else if ((I & 1 << 1) == 2 && (I & 1 << 0) == 0) {
-    program = (char *)malloc(sizeof("BSIS"));
-    strcpy(program, "BSIS");
-  } else if ((I & 1 << 1) == 2 && (I & 1 << 0) == 1) {
-    program = (char *)malloc(sizeof("BSMATH"));
-    strcpy(program, "BSMATH");
-  }
-
-  // switch (I & 3)
-  // {
-  //   case 0:
-  //     program = (char *)malloc(sizeof("BSCS"));
-  //     strcpy(program, "BSCS");
-  //     break;
-  //   case 1:
-  //     program = (char *)malloc(sizeof("BSIT"));
-  //     strcpy(program, "BSIT");
-  //     break;
-  //   case 2:
-  //     program = (char *)malloc(sizeof("BSIS"));
-  //     strcpy(program, "BSIS");
-  //     break;
-  //   case 3:
-  //     program = (char *)malloc(sizeof("BSMATH"));
-  //     strcpy(program, "BSMATH");
-  //     break;
+  // if ((I & 1 << 1) == 0 && (I & 1 << 0) == 0) {
+  //   program = (char *)malloc(sizeof("BSCS"));
+  //   strcpy(program, "BSCS");
+  // } else if ((I & 1 << 1) == 0 && (I & 1 << 0) == 1) {
+  //   program = (char *)malloc(sizeof("BSIT"));
+  //   strcpy(program, "BSIT");
+  // } else if ((I & 1 << 1) == 2 && (I & 1 << 0) == 0) {
+  //   program = (char *)malloc(sizeof("BSIS"));
+  //   strcpy(program, "BSIS");
+  // } else if ((I & 1 << 1) == 2 && (I & 1 << 0) == 1) {
+  //   program = (char *)malloc(sizeof("BSMATH"));
+  //   strcpy(program, "BSMATH");
   // }
+
+  switch (I & 3)
+  {
+    case 0:
+      program = (char *)malloc(sizeof("BSCS"));
+      strcpy(program, "BSCS");
+      break;
+    case 1:
+      program = (char *)malloc(sizeof("BSIT"));
+      strcpy(program, "BSIT");
+      break;
+    case 2:
+      program = (char *)malloc(sizeof("BSIS"));
+      strcpy(program, "BSIS");
+      break;
+    case 3:
+      program = (char *)malloc(sizeof("BSMATH"));
+      strcpy(program, "BSMATH");
+      break;
+  }
 
   return program;
 
@@ -341,8 +341,8 @@ int insertStudLL(studLL* SL, student S)
         temp->stud = S;
         temp->next = *trav;
         *trav = temp;
+        retVal = 1;
       }
-      retVal = 1;
     }
     return retVal;
 }
@@ -407,14 +407,10 @@ void convertToDCISMDict(dcismDict D, arrListStud SL)
      //Write your code here
     int indx;
     for (indx = 0; indx < SL.numStuds; indx++) {
-      // printf("IM HERE");
       int hashProgramIndx = programHash(SL.studs[indx].info);
       int hashYearIndx = yearLevelHash(SL.studs[indx].info);
-      // printf("PROGRAM INDX: %d\n", hashProgramIndx);
-      // printf("YEAR INDX: %d\n", hashYearIndx);
       int success = insertStudLL(&(D[hashProgramIndx].programStuds[hashYearIndx]), SL.studs[indx]);
       if (success == 1) {
-        // printf("SUCCESS :)\n");
         D[hashProgramIndx].studCtr++;
       }
     }
@@ -428,7 +424,6 @@ void convertToDCISMDict(dcismDict D, arrListStud SL)
 //-----------------------------------------------------------------------------------------
 void displayDCISMDict(dcismDict D)
 {
-  // printf("DID I REACH?\n");
     int i, j;
     for(i = 0; i < NUMPROGRAMS; i++){
         printf("\n---------------------------------------------------------------------------------------------------------------\n%s %d Students\n", getProgram(D[i].programStuds[i]->stud.info), D[i].studCtr);  //Complete code and uncomment
@@ -447,13 +442,25 @@ void displayDCISMDict(dcismDict D)
 studSet* initStudSet(void)
 {
      //Write your code here
-     studSet *temp;
-     *temp = (studSet)malloc(sizeof(sNode));
-     if (*temp != NULL) {
-      (*temp)->count = 0;
+    //  studSet temp = (studSet)malloc(sizeof(sNode));
+    //  printf("SIZE OF sNode: %d\n", sizeof(sNode));
+    studSet *tempSet = (studSet *)malloc(sizeof(studSet));
+    // studSet *tempSet = &temp;
+     if (tempSet != NULL) {
+      *tempSet = (studSet)malloc(sizeof(sNode));
+      if (*tempSet != NULL) {
+        (*tempSet)->count = 0;
+        int indx;
+        for (indx = 0; indx < MAXSTUDS; indx++) {
+          strcpy((*tempSet)->studs[indx].studID, "EMPTY");
+        }
+      } else {
+        free(tempSet);
+        tempSet = NULL;
+      }
      }
      
-     return temp;
+     return tempSet;
 }
 
 
@@ -463,9 +470,11 @@ studSet* initStudSet(void)
 void insertStudSet(studSet S, studRec sRecord)
 {
     //Write your code here
+      // printf("Records: %s, %s\n", sRecord.studID, sRecord.sName.fName);
     if (S->count != MAXSTUDS) {
       S->studs[S->count++] = sRecord;
     }
+
 
 }
 
@@ -483,12 +492,13 @@ studSet* removeInactiveStudents(dcismDict D)
      for (i = 0; i < NUMPROGRAMS; i++) {
       for (j = 0; j < YEARLEVELS; j++) {
         studLL *trav;
-        for (trav = &(D[i].programStuds[j]); *trav != NULL; ) {
-          if ((*trav)->stud.info & 128 < 1) {
+        for (trav = &(D[i].programStuds[j]); *trav != NULL;) {
+          if ((((*trav)->stud.info) & 128) != 128) {
+            printf("%s\n", (*trav)->stud.name.fName);
             studRec stud;
             studLL inactive = *trav;
             *trav = inactive->next;
-            // DO: Inserting
+            // DO: INSERTION
             strcpy(stud.studID, inactive->stud.idNum);
             stud.sName = inactive->stud.name;
             insertStudSet(*temp, stud);
@@ -498,6 +508,7 @@ studSet* removeInactiveStudents(dcismDict D)
         }
       }
      }
+     return temp;
 }
 
  
@@ -509,9 +520,9 @@ void displayStudSets(studSet* S)
 {
      //Write your code 
      int indx;
-     printf("%-10s\n", "ID");
-     printf("%-10s\n", "Firstname");
-     printf("%-10s\n", "Lastname");
+     printf("\n%-10s", "ID");
+     printf("%-10s", "Firstname");
+     printf("%-10s", "Lastname");
 
      for (indx = 0; indx < (*S)->count; indx++) {
       printf("\n%-10s", (*S)->studs[indx].studID);
