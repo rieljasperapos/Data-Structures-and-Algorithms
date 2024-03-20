@@ -442,23 +442,36 @@ void displayDCISMDict(dcismDict D)
 studSet* initStudSet(void)
 {
      //Write your code here
+    studSet *tempSet = (studSet *)malloc(sizeof(studSet) * NUMPROGRAMS);
+    if (tempSet != NULL) {
+      int indx;
+      for (indx = 0; indx < NUMPROGRAMS; indx++) {
+        tempSet[indx] = (studSet)malloc(sizeof(sNode));
+        if (tempSet[indx] != NULL) {
+          tempSet[indx]->count = 0;
+        }
+      }
+    }
+
+
+
     //  studSet temp = (studSet)malloc(sizeof(sNode));
     //  printf("SIZE OF sNode: %d\n", sizeof(sNode));
-    studSet *tempSet = (studSet *)malloc(sizeof(studSet));
-    // studSet *tempSet = &temp;
-     if (tempSet != NULL) {
-      *tempSet = (studSet)malloc(sizeof(sNode));
-      if (*tempSet != NULL) {
-        (*tempSet)->count = 0;
-        int indx;
-        for (indx = 0; indx < MAXSTUDS; indx++) {
-          strcpy((*tempSet)->studs[indx].studID, "EMPTY");
-        }
-      } else {
-        free(tempSet);
-        tempSet = NULL;
-      }
-     }
+    // studSet *tempSet = (studSet *)malloc(sizeof(studSet));
+    // // studSet *tempSet = &temp;
+    //  if (tempSet != NULL) {
+    //   *tempSet = (studSet)malloc(sizeof(sNode));
+    //   if (*tempSet != NULL) {
+    //     (*tempSet)->count = 0;
+    //     int indx;
+    //     for (indx = 0; indx < MAXSTUDS; indx++) {
+    //       strcpy((*tempSet)->studs[indx].studID, "EMPTY");
+    //     }
+    //   } else {
+    //     free(tempSet);
+    //     tempSet = NULL;
+    //   }
+    //  }
      
      return tempSet;
 }
@@ -471,9 +484,10 @@ void insertStudSet(studSet S, studRec sRecord)
 {
     //Write your code here
       // printf("Records: %s, %s\n", sRecord.studID, sRecord.sName.fName);
-    if (S->count != MAXSTUDS) {
-      S->studs[S->count++] = sRecord;
-    }
+      if (S->count != MAXSTUDS) {
+        S->studs[S->count++] = sRecord;
+      }
+    
 
 
 }
@@ -501,7 +515,7 @@ studSet* removeInactiveStudents(dcismDict D)
             // DO: INSERTION
             strcpy(stud.studID, inactive->stud.idNum);
             stud.sName = inactive->stud.name;
-            insertStudSet(*temp, stud);
+            insertStudSet(temp[i], stud);
           } else {
             trav = &(*trav)->next;
           }
@@ -519,16 +533,25 @@ studSet* removeInactiveStudents(dcismDict D)
 void displayStudSets(studSet* S)
 {
      //Write your code 
-     int indx;
+     int i,j;
      printf("\n%-10s", "ID");
      printf("%-10s", "Firstname");
      printf("%-10s", "Lastname");
 
-     for (indx = 0; indx < (*S)->count; indx++) {
-      printf("\n%-10s", (*S)->studs[indx].studID);
-      printf("%-10s", (*S)->studs[indx].sName.fName);
-      printf("%-10s", (*S)->studs[indx].sName.lName);
+     for (i = 0; i < NUMPROGRAMS; i++) {
+      for (j = 0; j < S[i]->count; j++) {
+        printf("\n%-10s", S[i]->studs[j].studID);
+        printf("%-10s", S[i]->studs[j].sName.fName);
+        printf("%-10s", S[i]->studs[j].sName.lName);
+      }
+      printf("\n\n");
      }
+
+    //  for (indx = 0; indx < (*S)->count; indx++) {
+    //   printf("\n%-10s", (*S)->studs[indx].studID);
+    //   printf("%-10s", (*S)->studs[indx].sName.fName);
+    //   printf("%-10s", (*S)->studs[indx].sName.lName);
+    //  }
 }
 
 
