@@ -9,7 +9,9 @@ typedef struct {
 void initialize(LIST *A);
 void initializeUnsortedList(LIST *A);
 void insert(LIST *A, int elem); // insert to an initially empty heap
-void heapify(LIST *A); // heapify the unsorted list
+void minHeap(LIST *A, int pIndx); // heapify the unsorted list (minHeap)
+void maxHeap(LIST *A, int pIndx); // heapify the unsorted list (maxHeap)
+void heapify(LIST *A);
 void displayHeap(LIST L);
 
 int main() {
@@ -63,26 +65,70 @@ int getSmallChild(LIST L, int pIndx) {
   return retVal;
 }
 
+int getBigChild(LIST L, int pIndx) {
+  int retVal = 0;
+  int LC = (pIndx * 2) + 1;
+  int RC = (pIndx * 2) + 2;
+  if (RC < MAX) {
+    if (L.elems[RC] > L.elems[LC]) {
+       retVal = RC;
+    } else {
+      retVal = LC;
+    }
+  } else {
+    retVal = LC;
+  }
+
+  return retVal;
+}
+
 void swap(int *x, int *y) {
   // TODO: Swap element here
-  printf("child: %d parent: %d\n", *x, *y);
   int temp = *x;
   *x = *y;
   *y = temp;
 }
 
 void heapify(LIST *A) {
-  // Find the parent of the rightmost child
-  int parentIndx = (A->lastIndx - 1) / 2;
-  for (; parentIndx >= 0; parentIndx--) {
-    int smallChildIndx = getSmallChild(*A, parentIndx);
-    while (smallChildIndx < MAX && A->elems[parentIndx] > A->elems[smallChildIndx]) {
-      swap(&(A->elems[smallChildIndx]), &(A->elems[parentIndx]));
-      parentIndx = smallChildIndx;
-      smallChildIndx = getSmallChild(*A, parentIndx);
-    }
+  int parentIndx;
+  for (parentIndx = (A->lastIndx - 1) / 2; parentIndx >= 0; parentIndx--) {
+    // minHeap(A, parentIndx);
+    maxHeap(A, parentIndx);
   }
 }
+
+// minHeap v2
+void minHeap(LIST *A, int pIndx) {
+    int smallChildIndx = getSmallChild(*A, pIndx); // Find the smaller child
+    while (smallChildIndx < MAX && A->elems[pIndx] > A->elems[smallChildIndx]) { // Loop until POT is satisfied
+      swap(&(A->elems[smallChildIndx]), &(A->elems[pIndx])); // swap elements
+      pIndx = smallChildIndx;
+      smallChildIndx = getSmallChild(*A, pIndx);
+    }
+}
+
+void maxHeap(LIST *A, int pIndx) {
+    int bigChildIndx = getBigChild(*A, pIndx); // Find the bigger child
+    while (bigChildIndx < MAX && A->elems[pIndx] < A->elems[bigChildIndx]) { // Loop until POT is satisfied
+      swap(&(A->elems[bigChildIndx]), &(A->elems[pIndx])); // swap elements
+      pIndx = bigChildIndx;
+      bigChildIndx = getBigChild(*A, pIndx);
+    }
+}
+
+// minHeap v1
+// void minHeap(LIST *A, int pIndx) {
+//   // Find the parent of the rightmost child
+//   int parentIndx;
+//   for (parentIndx = (A->lastIndx - 1) / 2; parentIndx >= 0; parentIndx--) {
+//     int smallChildIndx = getSmallChild(*A, parentIndx); // Find the small child
+//     while (smallChildIndx < MAX && A->elems[parentIndx] > A->elems[smallChildIndx]) { // Loop until POT is satisfied
+//       swap(&(A->elems[smallChildIndx]), &(A->elems[parentIndx]));
+//       parentIndx = smallChildIndx;
+//       smallChildIndx = getSmallChild(*A, parentIndx);
+//     }
+//   }
+// }
 
 void insert(LIST *A, int elem) {
   // TODO: Insert to an initially empty heap
