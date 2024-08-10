@@ -16,6 +16,7 @@ void dequeue(Queue *Q);
 bool isEmpty(Queue Q);
 bool isFull(Queue Q);
 void traverse(Queue *Q);
+void printArray(Queue Q);
 
 int main() {
     Queue myQueue;
@@ -24,24 +25,24 @@ int main() {
     enqueue(&myQueue, 'D');
     enqueue(&myQueue, 'S');
     enqueue(&myQueue, 'C');
-    enqueue(&myQueue, '-');
-    enqueue(&myQueue, 'U');
-    enqueue(&myQueue, 'S');
-    enqueue(&myQueue, 'C');
-    enqueue(&myQueue, 'C');
-    enqueue(&myQueue, 'C');
-    enqueue(&myQueue, 'C');
+    // enqueue(&myQueue, '-');
+    // enqueue(&myQueue, 'U');
+    // enqueue(&myQueue, 'S');
+    // enqueue(&myQueue, 'C');
+    // enqueue(&myQueue, 'C');
+    // enqueue(&myQueue, 'C');
+    // enqueue(&myQueue, 'C');
     
 
-    
+    printArray(myQueue);
     traverse(&myQueue);
     
     return 0;
 }
 
 void initialize(Queue *Q) {
-    Q->front = 9;
-    Q->rear = 8;
+    Q->front = 0;
+    Q->rear = MAX - 1;
 
     int i;
     for (i = 0; i < MAX; i++) {
@@ -71,6 +72,13 @@ void dequeue(Queue *Q) {
         printf("ARRAY IS NOW EMPTY CANNOT DEQUEUE\n");
     }
     Q->front = (Q->front + 1) % MAX;
+}
+
+void printArray(Queue Q) {
+  int indx;
+  for (indx = 0; indx < MAX; indx++) {
+    printf("%d: %c\n", indx, Q.elem[indx]);
+  }
 }
 
 void traverse(Queue *Q) {

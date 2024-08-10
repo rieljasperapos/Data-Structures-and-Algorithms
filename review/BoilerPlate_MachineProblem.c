@@ -511,7 +511,9 @@ closeDic * convertToCloseDict(openDic *D)
     for (indx = 0; indx <= temp.last; indx++) {
         int hashIndx = closeHash(temp.prod[indx].prodID);
         int i;
-        for (i = 0; strcmp((*closeD)[hashIndx].prodID, "EMPTY") != 0 && i < CLOSE_DSIZE; i++, hashIndx = ((closeHash(temp.prod[indx].prodID)) + i) % CLOSE_DSIZE) {}
+        for (i = 0; 
+            strcmp((*closeD)[hashIndx].prodID, "EMPTY") != 0 && strcmp((*closeD)[hashIndx].prodID, "DELETED") != 0 && i < CLOSE_DSIZE; 
+            i++, hashIndx = ((closeHash(temp.prod[indx].prodID)) + i) % CLOSE_DSIZE) {}
         if (i != CLOSE_DSIZE) {
             (*closeD)[hashIndx] = temp.prod[indx];
         } 

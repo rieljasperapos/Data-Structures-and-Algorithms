@@ -338,9 +338,14 @@ void heapifySubtree(minHeap *H, int subroot)
   // Get small child
   int LC = (subroot * 2) + 1;
   int RC = (subroot * 2) + 2;
-  smallChild = (strcmp(H->prod[LC].prodID, H->prod[RC].prodID) < 0) ? LC : RC;
+  if (RC <= H->lastNdx) {
+    smallChild = (strcmp(H->prod[LC].prodID, H->prod[RC].prodID) < 0) ? LC : RC;
+  } else if (LC <= H->lastNdx) {
+    smallChild = LC;
+  }
+  // smallChild = (strcmp(H->prod[LC].prodID, H->prod[RC].prodID) < 0) ? LC : RC;
 
-  for (; smallChild <= H->lastNdx && strcmp(H->prod[smallChild].prodID, H->prod[subroot].prodID) < 0;) {
+  for (; smallChild != subroot && strcmp(H->prod[smallChild].prodID, H->prod[subroot].prodID) < 0;) {
     swapProduct(&(H->prod[subroot]), &(H->prod[smallChild]));
 
     // Push down until POT is satisfied
@@ -348,6 +353,11 @@ void heapifySubtree(minHeap *H, int subroot)
     // Get small child again
     LC = (subroot * 2) + 1;
     RC = (subroot * 2) + 2;
-      smallChild = (strcmp(H->prod[LC].prodID, H->prod[RC].prodID) < 0) ? LC : RC;
+    if (RC <= H->lastNdx) {
+    smallChild = (strcmp(H->prod[LC].prodID, H->prod[RC].prodID) < 0) ? LC : RC;
+  } else if (LC <= H->lastNdx) {
+    smallChild = LC;
+  }
+    // smallChild = (strcmp(H->prod[LC].prodID, H->prod[RC].prodID) < 0) ? LC : RC;
   }
 }

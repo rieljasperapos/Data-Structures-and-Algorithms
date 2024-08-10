@@ -12,6 +12,8 @@ void insert(LIST *A, int elem); // insert to an initially empty heap
 void minHeap(LIST *A, int pIndx); // heapify the unsorted list (minHeap)
 void maxHeap(LIST *A, int pIndx); // heapify the unsorted list (maxHeap)
 void heapify(LIST *A);
+void heapSort(LIST *A);
+void deleteMax(LIST *A);
 void displayHeap(LIST L);
 
 int main() {
@@ -24,8 +26,11 @@ int main() {
   // for (indx = 0; indx < MAX; indx++) {
   //   insert(&myHeap, tempList[indx]);
   // }
-
+  printf("Unsorted\n");
   displayHeap(myHeap);
+  heapSort(&myHeap);
+  printf("Sorted\n");
+  displayHeap(myHeap); 
   
 
   return 0;
@@ -143,7 +148,29 @@ void insert(LIST *A, int elem) {
 
 void displayHeap(LIST L) {
   int indx;
-  for (indx = 0; indx < MAX; indx++) {
+  for (indx = 0; indx <= L.lastIndx; indx++) {
     printf("index[%d]: %d\n",indx, L.elems[indx]);
   }
+}
+
+void deleteMax(LIST *A) {
+    int pIndx, bigChildIndx;
+    pIndx = 0; // Get the root
+    swap(&(A->elems[pIndx]), &(A->elems[A->lastIndx])); // Swap the root with the lowest node to the right
+    // Loop until POT is satisfied
+    for (bigChildIndx = getBigChild(*A, pIndx); bigChildIndx < A->lastIndx && A->elems[pIndx] < A->elems[bigChildIndx];) {
+        swap(&(A->elems[pIndx]), &(A->elems[bigChildIndx]));
+        pIndx = bigChildIndx;
+        bigChildIndx = getBigChild(*A, pIndx);
+    }
+}
+
+void heapSort(LIST *A) {
+    int storeLastIndx = A->lastIndx;
+    // Repeatedly call deleteMax or deleteMin until theres no more elements
+    for (int indx = 0; A->lastIndx != -1; A->lastIndx--, indx++) {
+        deleteMax(A);
+        // deleteMin(A);
+    }
+    A->lastIndx = storeLastIndx;
 }

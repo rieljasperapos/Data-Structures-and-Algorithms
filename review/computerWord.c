@@ -20,6 +20,8 @@ SET setDifference(SET A, SET B);
 int main() {
     SET A = 149; // elements = { 7, 4, 2, 0}
     SET B = 6; // elements = { 2, 1 }
+    int testArr[7] = {1,2,3,4,5,6,7};
+    printf("\n\ntest array: %d\n\n", B);
 
     // A = 1 0 0 1 0 1 0 1
     // B = 0 0 0 0 0 1 1 0
@@ -28,19 +30,19 @@ int main() {
     displayBitPattern(UNION);
     displayElements(UNION);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    SET INTERSECTION = setIntersection(A, B);
-    printf("INTERSECTION\n");
-    displayBitPattern(INTERSECTION);
-    displayElements(INTERSECTION);
+    // SET INTERSECTION = setIntersection(A, B);
+    // printf("INTERSECTION\n");
+    // displayBitPattern(INTERSECTION);
+    // displayElements(INTERSECTION);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    SET DIFFERENCE = setDifference(A, B);
-    printf("DIFFERENCE\n");
-    displayBitPattern(DIFFERENCE);
-    displayElements(DIFFERENCE);
+    // SET DIFFERENCE = setDifference(A, B);
+    // printf("DIFFERENCE\n");
+    // displayBitPattern(DIFFERENCE);
+    // displayElements(DIFFERENCE);
 
 /*
     printf("\n\n");
@@ -73,20 +75,38 @@ void displayBitPattern(SET S) {
     }
 }
 
+// void displayBitPattern(SET S) {
+//     int size = sizeof(char) * 8;
+//     SET mask = 1 << (size - 1);
+//     for (; mask > 0; mask >>= 1) {
+//       ((S & 1 << mask) != 0 ) ? printf("%d ", 1) : printf("%d ", 0);
+//     }
+// }
+
 void displayElements(SET S) {
     int size = sizeof(char) * 8;
-    int indx;
-    printf("{ ");
-    for (indx = 0; indx < size; indx++) {
-        if ((S & 1 << indx) != 0) {
-            printf("%d", indx);
-            if (indx < size - 1) {
-                printf(", ");
-            }
-        }
+    SET mask = 1 << (size - 1);
+    for (; mask > 0; mask >>= 1) {
+      printf("%d\n", mask);
+      // printf("%d\n", (S & mask));
     }
-    printf(" }");
+
 }
+
+// void displayElements(SET S) {
+//     int size = sizeof(char) * 8;
+//     int indx;
+//     printf("{ ");
+//     for (indx = 0; indx < size; indx++) {
+//         if ((S & 1 << indx) != 0) {
+//             printf("%d", indx);
+//             if (indx < size - 1) {
+//                 printf(", ");
+//             }
+//         }
+//     }
+//     printf(" }");
+// }
 
 void addElement(SET *A, int element) {
     *A = *A | 1 << element;
